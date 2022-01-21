@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invoice.Api", "Invoice.Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoice.CoreBusiness", "Invoice.CoreBusiness\Invoice.CoreBusiness.csproj", "{24762418-ADA9-4ACB-822E-88722E899B89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoice.UseCases", "Invoice.UseCases\Invoice.UseCases.csproj", "{20D763F8-A905-416C-83C4-BF7130F6117A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{24762418-ADA9-4ACB-822E-88722E899B89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24762418-ADA9-4ACB-822E-88722E899B89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24762418-ADA9-4ACB-822E-88722E899B89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D763F8-A905-416C-83C4-BF7130F6117A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D763F8-A905-416C-83C4-BF7130F6117A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D763F8-A905-416C-83C4-BF7130F6117A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D763F8-A905-416C-83C4-BF7130F6117A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
