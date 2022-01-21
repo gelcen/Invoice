@@ -113,5 +113,11 @@ namespace Invoice.Plugins.Repository.InMemory.Invoices
         {
             return Task.FromResult(_invoices.Find(x => x.InvoiceId == invoiceId));
         }
+
+        public async Task UpdateInvoice(CoreBusiness.Invoice invoice)
+        {
+            var changedInvoice= await GetById(invoice.InvoiceId);
+            changedInvoice.Amount = invoice.Amount;
+        }
     }
 }

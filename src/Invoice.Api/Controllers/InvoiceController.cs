@@ -15,14 +15,17 @@ namespace Invoice.Api.Controllers
         private readonly IGetInvoicesUseCase _getInvoicesUseCase;
         private readonly IGetInvoiceByIdUseCase _getInvoiceByIdUseCase;
         private readonly IAddInvoiceUseCase _addInvoiceUseCase;
+        private readonly IEditInvoiceUseCase _editInvoiceUseCase;
 
         public InvoiceController(IGetInvoicesUseCase getInvoicesUseCase,
             IGetInvoiceByIdUseCase getInvoiceUseCase,
-            IAddInvoiceUseCase addInvoiceUseCase)
+            IAddInvoiceUseCase addInvoiceUseCase,
+            IEditInvoiceUseCase editInvoiceUseCase)
         {
             this._getInvoicesUseCase = getInvoicesUseCase;
             this._getInvoiceByIdUseCase = getInvoiceUseCase;
             this._addInvoiceUseCase = addInvoiceUseCase;
+            this._editInvoiceUseCase = editInvoiceUseCase;
         }
 
         [HttpGet] 
@@ -44,6 +47,13 @@ namespace Invoice.Api.Controllers
         {
             var createdInvoice = await _addInvoiceUseCase.Execute(id, amount);
             return CreatedAtAction(nameof(GetInvoiceById), new { id = createdInvoice.InvoiceId }, createdInvoice);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditInvoice(int? id, float? amount)
+        {
+            await _editInvoiceUseCase.Execute(id, amount);
+            return NoContent();
         }
     }
 }

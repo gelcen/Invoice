@@ -39,6 +39,7 @@ namespace Invoice.Api
             services.AddTransient<IGetInvoicesUseCase, GetInvoicesUseCase>();
             services.AddTransient<IGetInvoiceByIdUseCase, GetInvoiceByIdUseCase>();
             services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
+            services.AddTransient<IEditInvoiceUseCase, EditInvoiceUseCase>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
