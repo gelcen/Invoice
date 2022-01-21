@@ -7,8 +7,8 @@ namespace Invoice.CoreBusiness
         public int InvoiceId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime ModifiedAt { get; set; }
-        public ProcessingStatus ProcessingStatus { get; set; }
+        public ProcessingStatus ProcessingStatus { get; set; } = ProcessingStatus.New;
         public float Amount { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.CreditCard;
     }
 }

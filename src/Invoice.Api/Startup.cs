@@ -34,10 +34,11 @@ namespace Invoice.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Invoice.Api", Version = "v1" });
             });
 
-            services.AddTransient<IInvoiceRepository, InvoiceInMemoryRepository>();
+            services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
 
             services.AddTransient<IGetInvoicesUseCase, GetInvoicesUseCase>();
             services.AddTransient<IGetInvoiceByIdUseCase, GetInvoiceByIdUseCase>();
+            services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

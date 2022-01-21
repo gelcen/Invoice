@@ -7,5 +7,6 @@ namespace Invoice.UseCases.Invoices
     {
         Task<List<CoreBusiness.Invoice>> GetAll();
         Task<CoreBusiness.Invoice> GetById(int invoiceId);
+        Task AddInvoice(CoreBusiness.Invoice invoice);
     }
 }

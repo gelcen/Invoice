@@ -98,6 +98,12 @@ namespace Invoice.Plugins.Repository.InMemory.Invoices
             #endregion
         }
 
+        public Task AddInvoice(CoreBusiness.Invoice invoice)
+        {
+            _invoices.Add(invoice);
+            return Task.CompletedTask;
+        }
+
         public Task<List<CoreBusiness.Invoice>> GetAll()
         {
             return Task.FromResult(_invoices);
