@@ -4,4 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Invoice.CoreBusiness\Invoice.CoreBusiness.csproj" />
+    <ProjectReference Include="..\Invoice.UseCases\Invoice.UseCases.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,3 +1,5 @@
+using Invoice.Plugins.Repository.InMemory.Invoices;
+using Invoice.UseCases.Invoices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,7 +25,6 @@ namespace Invoice.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -32,9 +33,12 @@ namespace Invoice.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Invoice.Api", Version = "v1" });
             });
+
+            services.AddTransient<IInvoiceRepository, InvoiceInMemoryRepository>();
+
+            services.AddTransient<IGetInvoicesUseCase, GetInvoicesUseCase>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

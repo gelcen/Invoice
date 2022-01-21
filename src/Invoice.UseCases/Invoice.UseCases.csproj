@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Invoice\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Invoice.CoreBusiness\Invoice.CoreBusiness.csproj" />
   </ItemGroup>
 
