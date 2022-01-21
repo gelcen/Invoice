@@ -13,16 +13,26 @@ namespace Invoice.Api.Controllers
     public class InvoiceController : ControllerBase
     {
         private readonly IGetInvoicesUseCase _getInvoicesUseCase;
+        private readonly IGetInvoiceByIdUseCase _getInvoiceByIdUseCase;
 
-        public InvoiceController(IGetInvoicesUseCase getInvoicesUseCase)
+        public InvoiceController(IGetInvoicesUseCase getInvoicesUseCase,
+            IGetInvoiceByIdUseCase getInvoiceUseCase)
         {
-            _getInvoicesUseCase = getInvoicesUseCase;
+            this._getInvoicesUseCase = getInvoicesUseCase;
+            this._getInvoiceByIdUseCase = getInvoiceUseCase;
         }
 
         [HttpGet] 
         public async Task<IActionResult> GetInvoices()
         {
             var result = await _getInvoicesUseCase.Execute();
+            return Ok(result);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetInvoiceById(int id)
+        {
+            var result = await _getInvoiceByIdUseCase.Execute(id);
             return Ok(result);
         }
     }

@@ -11,6 +11,7 @@ namespace Invoice.Plugins.Repository.InMemory.Invoices
 
         public InvoiceInMemoryRepository()
         {
+            #region Create fake data
             _invoices = new List<CoreBusiness.Invoice>()
             {
                 new CoreBusiness.Invoice
@@ -94,11 +95,17 @@ namespace Invoice.Plugins.Repository.InMemory.Invoices
                     PaymentMethod = CoreBusiness.PaymentMethod.ElectronicCheck
                 },
             };
+            #endregion
         }
 
         public Task<List<CoreBusiness.Invoice>> GetAll()
         {
             return Task.FromResult(_invoices);
+        }
+
+        public Task<CoreBusiness.Invoice> GetById(int invoiceId)
+        {
+            return Task.FromResult(_invoices.Find(x => x.InvoiceId == invoiceId));
         }
     }
 }

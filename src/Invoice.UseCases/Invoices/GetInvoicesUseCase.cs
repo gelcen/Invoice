@@ -9,7 +9,7 @@ namespace Invoice.UseCases.Invoices
 
         public GetInvoicesUseCase(IInvoiceRepository repository)
         {
-            _repository = repository;
+            this._repository = repository;
         }
 
         public async Task<List<CoreBusiness.Invoice>> Execute()
