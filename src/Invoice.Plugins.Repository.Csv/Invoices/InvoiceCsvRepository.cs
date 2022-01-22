@@ -28,13 +28,16 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
         public Task AddInvoice(CoreBusiness.Invoice invoice)
         {
-            throw new NotImplementedException();
+            using var stream = File.Open(_options.PathToCsvFile, FileMode.Append);
+            using var streamWriter = new StreamWriter(stream);
+            using var csvWriter = new CsvWriter(streamWriter, _csvConfig);
+            csvWriter.WriteRecord(CreateRecordFromInvoice(invoice));
+            return Task.CompletedTask;
         }
 
         public async Task<List<CoreBusiness.Invoice>> GetAll()
         {
-            string filename = _options.PathToCsvFile;
-            using var streamReader = File.OpenText(filename);
+            using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
 
             var invoices = csvReader.GetRecordsAsync<InvoiceRecord>();
@@ -69,6 +72,11 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             return invoice;
         }
 
+        public Task UpdateInvoice(CoreBusiness.Invoice invoice)
+        {
+            throw new NotImplementedException();
+        }
+
         private CoreBusiness.Invoice CreateInvoiceFromRecord(InvoiceRecord record)
         {
             return new CoreBusiness.Invoice()
@@ -81,9 +89,16 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             };
         }
 
-        public Task UpdateInvoice(CoreBusiness.Invoice invoice)
+        private InvoiceRecord CreateRecordFromInvoice(CoreBusiness.Invoice invoice)
         {
-            throw new NotImplementedException();
+            return new InvoiceRecord()
+            {
+                Id = invoice.InvoiceId,
+                Created = invoice.CreatedAt,
+                ProcessingStatus = (int)invoice.ProcessingStatus,
+                Amount = invoice.Amount.ToString(),
+                PaymentMethod = (int)invoice.PaymentMethod
+            };
         }
     }
 }
