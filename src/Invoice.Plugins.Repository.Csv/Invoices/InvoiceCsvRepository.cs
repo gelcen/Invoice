@@ -15,10 +15,11 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
     public class InvoiceCsvRepository : IInvoiceRepository
     {
         private readonly InvoiceCsvOptions _options;
-        private readonly CsvConfiguration _csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+        private readonly CsvConfiguration _csvConfig = new(CultureInfo.CurrentCulture)
         {
             HasHeaderRecord = false
         };
+        private readonly CultureInfo _provider = new("en-US");
 
         public InvoiceCsvRepository(IOptions<InvoiceCsvOptions> options)
         {
@@ -40,26 +41,44 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
             var invoiceList = new List<CoreBusiness.Invoice>();
 
-            var provider = new CultureInfo("en-US");
 
             await foreach (var invoiceRecord in invoices)
             {
-                invoiceList.Add(new CoreBusiness.Invoice()
-                {
-                    InvoiceId = invoiceRecord.Id,
-                    CreatedAt = invoiceRecord.Created,
-                    ProcessingStatus = (CoreBusiness.ProcessingStatus)invoiceRecord.ProcessingStatus,
-                    Amount = float.Parse(invoiceRecord.Amount, NumberStyles.Float, provider),
-                    PaymentMethod = (CoreBusiness.PaymentMethod)invoiceRecord.PaymentMethod
-                });
+                invoiceList.Add(CreateInvoiceFromRecord(invoiceRecord));
             }
 
             return invoiceList;
         }
 
-        public Task<CoreBusiness.Invoice> GetById(int invoiceId)
+        public async Task<CoreBusiness.Invoice> GetById(int invoiceId)
         {
-            throw new NotImplementedException();
+            CoreBusiness.Invoice invoice = null;
+
+            using var streamReader = File.OpenText(_options.PathToCsvFile);
+            using var csvReader = new CsvReader(streamReader, _csvConfig);
+
+            await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
+            {
+                if (invoiceRecord.Id == invoiceId)
+                {
+                    invoice = CreateInvoiceFromRecord(invoiceRecord);
+                    break;
+                }
+            }
+
+            return invoice;
+        }
+
+        private CoreBusiness.Invoice CreateInvoiceFromRecord(InvoiceRecord record)
+        {
+            return new CoreBusiness.Invoice()
+            {
+                InvoiceId = record.Id,
+                CreatedAt = record.Created,
+                ProcessingStatus = (CoreBusiness.ProcessingStatus)record.ProcessingStatus,
+                Amount = float.Parse(record.Amount, NumberStyles.Float, _provider),
+                PaymentMethod = (CoreBusiness.PaymentMethod)record.PaymentMethod
+            };
         }
 
         public Task UpdateInvoice(CoreBusiness.Invoice invoice)
