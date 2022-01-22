@@ -1,3 +1,4 @@
+using Invoice.Plugins.Repository.Csv.Invoices;
 using Invoice.Plugins.Repository.InMemory.Invoices;
 using Invoice.UseCases.Invoices;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +35,10 @@ namespace Invoice.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Invoice.Api", Version = "v1" });
             });
 
-            services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
+            services.Configure<InvoiceCsvOptions>(Configuration.GetSection(InvoiceCsvOptions.CsvDataSource));
+
+            //services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
+            services.AddSingleton<IInvoiceRepository, InvoiceCsvRepository>();
 
             services.AddTransient<IGetInvoicesUseCase, GetInvoicesUseCase>();
             services.AddTransient<IGetInvoiceByIdUseCase, GetInvoiceByIdUseCase>();
