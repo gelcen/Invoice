@@ -72,9 +72,30 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             return invoice;
         }
 
-        public Task UpdateInvoice(CoreBusiness.Invoice invoice)
+        public async Task UpdateInvoice(CoreBusiness.Invoice invoice)
         {
-            throw new NotImplementedException();
+            using var streamReader = File.OpenText(_options.PathToCsvFile);
+            using var csvReader = new CsvReader(streamReader, _csvConfig);
+
+            List<InvoiceRecord> invoiceRecords = new();
+
+            await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
+            {
+                if (invoiceRecord.Id == invoice.InvoiceId)
+                {
+                    invoiceRecord.Amount = invoice.Amount.ToString();
+                }
+                invoiceRecords.Add(invoiceRecord);
+            }
+            streamReader.Close();
+
+            using var stream = File.Open(_options.PathToCsvFile, FileMode.Open);
+            using var streamWriter = new StreamWriter(stream);
+            using var csvWriter = new CsvWriter(streamWriter, _csvConfig);
+
+            await csvWriter.WriteRecordsAsync<InvoiceRecord>(invoiceRecords);
+
+            csvWriter.Flush();
         }
 
         private CoreBusiness.Invoice CreateInvoiceFromRecord(InvoiceRecord record)
