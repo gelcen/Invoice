@@ -11,23 +11,23 @@ namespace Invoice.UseCases.Invoices
             this._repository = repository;
         }
 
-        public async Task<CoreBusiness.Invoice> Execute(int? invoiceId, float? amount)
+        public async Task<CoreBusiness.Invoice> Execute(int? number, float? amount)
         {
-            if (invoiceId == null || amount == null)
+            if (number == null || amount == null)
             {
-                throw new AddInvoiceException("Id and Amount of invoice should not be null");
+                throw new AddInvoiceException("Number and Amount of invoice should not be null");
             }
 
-            var invoiceWithId = await _repository.GetById(invoiceId.Value);
+            var invoiceWithNumber = await _repository.GetByNumber(number.Value);
 
-            if (invoiceWithId != null)
+            if (invoiceWithNumber != null)
             {
-                throw new AddInvoiceException("There is already invoice with that Id");
+                throw new AddInvoiceException("There is already invoice with that Number");
             }
 
             var invoice = new CoreBusiness.Invoice()
             {
-                InvoiceId = invoiceId.Value,
+                Number = number.Value,
                 Amount = amount.Value
             };
 

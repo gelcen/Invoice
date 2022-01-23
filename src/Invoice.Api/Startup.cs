@@ -41,7 +41,7 @@ namespace Invoice.Api
             services.AddSingleton<IInvoiceRepository, InvoiceCsvRepository>();
 
             services.AddTransient<IGetInvoicesUseCase, GetInvoicesUseCase>();
-            services.AddTransient<IGetInvoiceByIdUseCase, GetInvoiceByIdUseCase>();
+            services.AddTransient<IGetInvoiceByNumberUseCase, GetInvoiceByNumberUseCase>();
             services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
             services.AddTransient<IEditInvoiceUseCase, EditInvoiceUseCase>();
         }

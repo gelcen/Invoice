@@ -2,12 +2,9 @@
 using CsvHelper.Configuration;
 using Invoice.UseCases.Invoices;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Invoice.Plugins.Repository.Csv.Invoices
@@ -53,7 +50,7 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             return invoiceList;
         }
 
-        public async Task<CoreBusiness.Invoice> GetById(int invoiceId)
+        public async Task<CoreBusiness.Invoice> GetByNumber(int number)
         {
             CoreBusiness.Invoice invoice = null;
 
@@ -62,7 +59,7 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
             await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
             {
-                if (invoiceRecord.Id == invoiceId)
+                if (invoiceRecord.Number == number)
                 {
                     invoice = CreateInvoiceFromRecord(invoiceRecord);
                     break;
@@ -81,9 +78,10 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
             await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
             {
-                if (invoiceRecord.Id == invoice.InvoiceId)
+                if (invoiceRecord.Number == invoice.Number)
                 {
                     invoiceRecord.Amount = invoice.Amount.ToString();
+                    invoiceRecord.ModifiedAt = invoice.ModifiedAt;
                 }
                 invoiceRecords.Add(invoiceRecord);
             }
@@ -102,11 +100,12 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
         {
             return new CoreBusiness.Invoice()
             {
-                InvoiceId = record.Id,
-                CreatedAt = record.Created,
+                Number = record.Number,
+                CreatedAt = record.CreatedAt,
                 ProcessingStatus = (CoreBusiness.ProcessingStatus)record.ProcessingStatus,
                 Amount = float.Parse(record.Amount, NumberStyles.Float, _provider),
-                PaymentMethod = (CoreBusiness.PaymentMethod)record.PaymentMethod
+                PaymentMethod = (CoreBusiness.PaymentMethod)record.PaymentMethod,
+                ModifiedAt = record.ModifiedAt
             };
         }
 
@@ -114,11 +113,12 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
         {
             return new InvoiceRecord()
             {
-                Id = invoice.InvoiceId,
-                Created = invoice.CreatedAt,
+                Number = invoice.Number,
+                CreatedAt = invoice.CreatedAt,
                 ProcessingStatus = (int)invoice.ProcessingStatus,
                 Amount = invoice.Amount.ToString(),
-                PaymentMethod = (int)invoice.PaymentMethod
+                PaymentMethod = (int)invoice.PaymentMethod,
+                ModifiedAt = invoice.ModifiedAt
             };
         }
     }

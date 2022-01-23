@@ -1,28 +1,30 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Invoice.UseCases.Invoices
 {
     public class EditInvoiceUseCase : IEditInvoiceUseCase
     {
         private readonly IInvoiceRepository _repository;
-        private readonly IGetInvoiceByIdUseCase _getInvoiceByIdUseCase;
+        private readonly IGetInvoiceByNumberUseCase _getInvoiceByNumberUseCase;
 
-        public EditInvoiceUseCase(IInvoiceRepository repository, IGetInvoiceByIdUseCase getInvoiceByIdUseCase)
+        public EditInvoiceUseCase(IInvoiceRepository repository, IGetInvoiceByNumberUseCase getInvoiceByNumberUseCase)
         {
             this._repository = repository;
-            this._getInvoiceByIdUseCase = getInvoiceByIdUseCase;
+            this._getInvoiceByNumberUseCase = getInvoiceByNumberUseCase;
         }
 
-        public async Task Execute(int? invoiceId, float? amount)
+        public async Task Execute(int? number, float? amount)
         {
-            if (invoiceId == null || amount == null)
+            if (number == null || amount == null)
             {
-                throw new EditInvoiceException("Id and Amount of invoice should not be null");
+                throw new EditInvoiceException("Number and Amount of invoice should not be null");
             }
 
-            var invoice = await _getInvoiceByIdUseCase.Execute(invoiceId.Value);
+            var invoice = await _getInvoiceByNumberUseCase.Execute(number.Value);
 
             invoice.Amount = amount.Value;
+            invoice.ModifiedAt = DateTime.Now;
 
             await _repository.UpdateInvoice(invoice);
         }

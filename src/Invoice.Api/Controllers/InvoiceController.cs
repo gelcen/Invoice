@@ -1,9 +1,5 @@
 ﻿using Invoice.UseCases.Invoices;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Invoice.Api.Controllers
@@ -13,17 +9,17 @@ namespace Invoice.Api.Controllers
     public class InvoiceController : ControllerBase
     {
         private readonly IGetInvoicesUseCase _getInvoicesUseCase;
-        private readonly IGetInvoiceByIdUseCase _getInvoiceByIdUseCase;
+        private readonly IGetInvoiceByNumberUseCase _getInvoiceByNumberUseCase;
         private readonly IAddInvoiceUseCase _addInvoiceUseCase;
         private readonly IEditInvoiceUseCase _editInvoiceUseCase;
 
         public InvoiceController(IGetInvoicesUseCase getInvoicesUseCase,
-            IGetInvoiceByIdUseCase getInvoiceUseCase,
+            IGetInvoiceByNumberUseCase getInvoiceUseCase,
             IAddInvoiceUseCase addInvoiceUseCase,
             IEditInvoiceUseCase editInvoiceUseCase)
         {
             this._getInvoicesUseCase = getInvoicesUseCase;
-            this._getInvoiceByIdUseCase = getInvoiceUseCase;
+            this._getInvoiceByNumberUseCase = getInvoiceUseCase;
             this._addInvoiceUseCase = addInvoiceUseCase;
             this._editInvoiceUseCase = editInvoiceUseCase;
         }
@@ -35,24 +31,24 @@ namespace Invoice.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetInvoiceById(int id)
+        [HttpGet("{number:int}")]
+        public async Task<IActionResult> GetInvoiceByNumber(int number)
         {
-            var result = await _getInvoiceByIdUseCase.Execute(id);
+            var result = await _getInvoiceByNumberUseCase.Execute(number);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddInvoice(int? id, float? amount)
+        public async Task<IActionResult> AddInvoice(int? number, float? amount)
         {
-            var createdInvoice = await _addInvoiceUseCase.Execute(id, amount);
-            return CreatedAtAction(nameof(GetInvoiceById), new { id = createdInvoice.InvoiceId }, createdInvoice);
+            var createdInvoice = await _addInvoiceUseCase.Execute(number, amount);
+            return CreatedAtAction(nameof(GetInvoiceByNumber), new { id = createdInvoice.Number }, createdInvoice);
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditInvoice(int? id, float? amount)
+        public async Task<IActionResult> EditInvoice(int? number, float? amount)
         {
-            await _editInvoiceUseCase.Execute(id, amount);
+            await _editInvoiceUseCase.Execute(number, amount);
             return NoContent();
         }
     }

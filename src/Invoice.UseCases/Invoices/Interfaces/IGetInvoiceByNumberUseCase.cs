@@ -2,7 +2,7 @@
 
 namespace Invoice.UseCases.Invoices
 {
-    public interface IGetInvoiceByIdUseCase
+    public interface IGetInvoiceByNumberUseCase
     {
         Task<CoreBusiness.Invoice> Execute(int invoiceId);
     }
