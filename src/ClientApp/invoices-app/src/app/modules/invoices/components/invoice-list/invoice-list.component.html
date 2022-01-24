@@ -1,0 +1,20 @@
+<table class="table table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th>Номер</th>
+            <th>Создан</th>
+            <th>Статус</th>
+            <th>Сумма</th>
+            <th>Способ оплаты</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let invoice of invoices">
+            <td>{{ invoice.number }}</td>
+            <td>{{ invoice.createdAt | date:"dd.MM.yyyy H:mm" }}</td>
+            <td>{{ invoice.processingStatus }}</td>
+            <td>{{ invoice.amount }}</td>
+            <td>{{ invoice.paymentMethod }} </td>
+        </tr>
+    </tbody>
+</table>

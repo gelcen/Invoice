@@ -6,12 +6,10 @@ namespace Invoice.UseCases.Invoices
     public class EditInvoiceUseCase : IEditInvoiceUseCase
     {
         private readonly IInvoiceRepository _repository;
-        private readonly IGetInvoiceByNumberUseCase _getInvoiceByNumberUseCase;
 
-        public EditInvoiceUseCase(IInvoiceRepository repository, IGetInvoiceByNumberUseCase getInvoiceByNumberUseCase)
+        public EditInvoiceUseCase(IInvoiceRepository repository) 
         {
             this._repository = repository;
-            this._getInvoiceByNumberUseCase = getInvoiceByNumberUseCase;
         }
 
         public async Task Execute(int? number, float? amount)
@@ -21,7 +19,7 @@ namespace Invoice.UseCases.Invoices
                 throw new EditInvoiceException("Number and Amount of invoice should not be null");
             }
 
-            var invoice = await _getInvoiceByNumberUseCase.Execute(number.Value);
+            var invoice = await _repository.GetByNumber(number.Value);
 
             invoice.Amount = amount.Value;
             invoice.ModifiedAt = DateTime.Now;

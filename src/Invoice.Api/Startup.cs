@@ -44,10 +44,19 @@ namespace Invoice.Api
             services.AddTransient<IGetInvoiceByNumberUseCase, GetInvoiceByNumberUseCase>();
             services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
             services.AddTransient<IEditInvoiceUseCase, EditInvoiceUseCase>();
+
+            services.AddCors();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options =>
+                options
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                );
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

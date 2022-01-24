@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Invoice.UseCases.Invoices.Helpers;
+using Invoice.UseCases.Invoices.ViewModels;
+using System.Threading.Tasks;
 
 namespace Invoice.UseCases.Invoices
 {
@@ -11,7 +13,7 @@ namespace Invoice.UseCases.Invoices
             this._repository = repository;
         }
 
-        public async Task<CoreBusiness.Invoice> Execute(int number)
+        public async Task<GetInvoiceViewModel> Execute(int number)
         {
             var invoice = await _repository.GetByNumber(number);
 
@@ -20,7 +22,14 @@ namespace Invoice.UseCases.Invoices
                 throw new InvoiceNotFoundException($"Invoice with number {number} not found");
             }
 
-            return invoice;
+            return new GetInvoiceViewModel()
+            {
+                Number = invoice.Number,
+                CreatedAt = invoice.CreatedAt,
+                PaymentMethod = invoice.PaymentMethod.ToViewModelString(),
+                ProcessingStatus = invoice.PaymentMethod.ToViewModelString(),
+                Amount = invoice.Amount
+            };
         }
     }
 }
