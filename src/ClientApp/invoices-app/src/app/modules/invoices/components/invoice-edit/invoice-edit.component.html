@@ -1,1 +1,25 @@
-<p>invoice-edit works!</p>
+<form [formGroup]="invoiceFormGroup" class="edit-form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="invoiceNumber">Номер счета</label>
+        <input formControlName="invoiceNumber" class="form-control" id="invoiceNumber" placeholder="Номер счета">
+        <span class="error-block" *ngIf="!invoiceNumber.valid && invoiceNumber.touched">
+            Введите номер счета (целое число)
+        </span>
+    </div>
+    <div class="form-group">
+        <label for="amount">Сумма счета</label>
+        <input formControlName="invoiceAmount" class="form-control" id="amount" placeholder="Сумма счета">
+        <span class="error-block" *ngIf="!invoiceAmount.valid && invoiceAmount.touched">
+            Введите сумму счета (вещественное число)
+        </span>
+    </div>
+    <div class="form-group">
+        <label for="paymentMethod">Способ оплаты</label>
+        <select class="form-select" aria-label="Default select example" type="number"
+            formControlName="paymentMethod" name="paymentMethodSelect" id="paymentMethod">
+            <option *ngFor="let method of paymentMethods" [ngValue]="method">{{ method.name }}</option>
+        </select>
+    </div>
+    <button class="btn btn-secondary">Закрыть</button>
+    <button type="submit" class="btn btn-primary save" [attr.disabled]="invoiceFormGroup.valid ? null : 'disabled'">Сохранить</button>
+</form>

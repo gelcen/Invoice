@@ -4,6 +4,8 @@ import { InvoiceListComponent } from './components/invoice-list/invoice-list.com
 import { InvoiceEditComponent } from './components/invoice-edit/invoice-edit.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ProcessingStatusPipe } from './pipes/processing-status.pipe';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -15,10 +17,14 @@ import { ProcessingStatusPipe } from './pipes/processing-status.pipe';
   ],
   imports: [
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule, 
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [
-    InvoiceListComponent
+    InvoiceListComponent,
+    InvoiceEditComponent
   ]
 })
 export class InvoicesModule { }
