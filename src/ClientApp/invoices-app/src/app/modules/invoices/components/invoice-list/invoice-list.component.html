@@ -6,6 +6,7 @@
             <th>Статус</th>
             <th>Сумма</th>
             <th>Способ оплаты</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -15,7 +16,8 @@
             <td>{{ invoice.processingStatus }}</td>
             <td>{{ invoice.amount }}</td>
             <td>{{ invoice.paymentMethod }} </td>
+            <td><button class="btn btn-secondary" (click)="onEditClick(invoice)">Изменить</button></td>
         </tr>
     </tbody>
 </table>
-<button class="btn btn-dark">Создать</button>
+<a type="button" class="btn btn-dark" routerLink="./create">Создать</a>

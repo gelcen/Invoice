@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProcessingStatusPipe } from './pipes/processing-status.pipe';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InvoicesRoutingModule } from './invoices-routing.module';
 
 
 
@@ -20,7 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     NgbModule, 
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    InvoicesRoutingModule
   ],
   exports: [
     InvoiceListComponent,

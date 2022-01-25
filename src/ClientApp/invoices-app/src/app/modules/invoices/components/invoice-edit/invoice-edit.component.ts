@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 interface SelectOption {
   number: number;
@@ -13,6 +16,8 @@ interface SelectOption {
 })
 export class InvoiceEditComponent implements OnInit {
   invoiceFormGroup: FormGroup;
+  private isEditing: boolean = false;  
+  selectedNumber?: number;
 
   paymentMethods: SelectOption[] = [
     { number: 1, name: "Кредитная карта" },
@@ -20,31 +25,37 @@ export class InvoiceEditComponent implements OnInit {
     { number: 3, name: "Электронный чек" },
   ]
 
-  constructor() { 
+  constructor(private location: Location,
+    private route: ActivatedRoute) { 
     this.invoiceFormGroup = new FormGroup({
-      invoiceNumber: new FormControl("", [Validators.required, Validators.pattern("^[0-9]*$")]),
-      invoiceAmount: new FormControl("", [Validators.required, Validators.pattern(/^\-?\d+((\.|\,)\d+)?$/)]),
-      paymentMethod: new FormControl(this.paymentMethods[0]) 
+      invoiceNumberForm: new FormControl("", [Validators.required, Validators.pattern("^[0-9]*$")]),
+      invoiceAmountForm: new FormControl("", [Validators.required, Validators.pattern(/^\-?\d+((\.|\,)\d+)?$/)]),
+      paymentMethodForm: new FormControl(this.paymentMethods[0]) 
     });
   }
 
   ngOnInit(): void {
-    
+    this.selectedNumber = Number(this.route.snapshot.paramMap.get('number'));
+    console.log(this.selectedNumber);
   }
 
   onSubmit(): void {
     if (this.invoiceFormGroup.valid) {
-      console.log(this.invoiceFormGroup.controls.invoiceNumber.value);
-      console.log(this.invoiceFormGroup.controls.invoiceAmount.value);
-      console.log(this.invoiceFormGroup.controls.paymentMethod.value);
+      console.log(this.invoiceFormGroup.controls.invoiceNumberForm.value);
+      console.log(this.invoiceFormGroup.controls.invoiceAmountForm.value);
+      console.log(this.invoiceFormGroup.controls.paymentMethodForm.value);
     }
   }
 
-  get invoiceNumber() {
-    return this.invoiceFormGroup.controls.invoiceNumber;
+  onCloseClick(): void {
+    this.location.back();
   }
 
-  get invoiceAmount() {
-    return this.invoiceFormGroup.controls.invoiceAmount;
+  get invoiceNumberForm() {
+    return this.invoiceFormGroup.controls.invoiceNumberForm;
+  }
+
+  get invoiceAmountForm() {
+    return this.invoiceFormGroup.controls.invoiceAmountForm;
   }
 }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { InvoicesModule } from './modules/invoices/invoices.module';
@@ -10,7 +11,8 @@ import { InvoicesModule } from './modules/invoices/invoices.module';
   ],
   imports: [
     BrowserModule,
-    InvoicesModule
+    InvoicesModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
