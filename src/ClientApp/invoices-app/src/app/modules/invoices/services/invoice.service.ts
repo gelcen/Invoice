@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -6,6 +6,8 @@ import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { InvoiceEditViewModel } from '../models/invoice-edit.model';
 import { InvoiceListElementViewModel } from '../models/invoice-list.model';
+import { InvoiceTableViewModel } from '../models/invoice-table.model';
+import { InvoiceTableRequest } from '../requests/invoice-table.request';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +18,16 @@ export class InvoiceService {
 
   constructor(private http: HttpClient) { }
 
-  getInvoices(): Observable<InvoiceListElementViewModel[]> {
-    return this.http.get<InvoiceListElementViewModel[]>(this.apiUrl)
+  getInvoices(tableRequest: InvoiceTableRequest): Observable<InvoiceTableViewModel> {
+    const params = new HttpParams()
+      .set("filters", tableRequest.filters)
+      .set("sorts", tableRequest.sorts)
+      .set("page", tableRequest.page.toString())
+      .set("pageSize", tableRequest.pageSize.toString());
+
+    return this.http.get<InvoiceTableViewModel>(this.apiUrl, {params:params})
       .pipe(
-        catchError(this.handleError<InvoiceListElementViewModel[]>("getInvoices"))
+        catchError(this.handleError<InvoiceTableViewModel>("getInvoices"))
       );
   }
 

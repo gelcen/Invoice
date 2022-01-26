@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Invoice.Plugins.Repository.Csv.Invoices
@@ -53,22 +54,23 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             csvWriter.Flush();
         }
 
-        public async Task<List<CoreBusiness.Invoice>> GetAll()
+        public IEnumerable<CoreBusiness.Invoice> GetAll()
         {
             using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
 
-            var invoices = csvReader.GetRecordsAsync<InvoiceRecord>();
+            var invoices = csvReader.GetRecords<InvoiceRecord>();
 
             var invoiceList = new List<CoreBusiness.Invoice>();
 
 
-            await foreach (var invoiceRecord in invoices)
+            foreach (var invoiceRecord in invoices)
             {
-                invoiceList.Add(CreateInvoiceFromRecord(invoiceRecord));
+                //invoiceList.Add(CreateInvoiceFromRecord(invoiceRecord));
+                yield return CreateInvoiceFromRecord(invoiceRecord);
             }
 
-            return invoiceList;
+            //return invoiceList;
         }
 
         public async Task<CoreBusiness.Invoice> GetByNumber(int number)

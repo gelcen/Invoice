@@ -20,4 +20,9 @@
         </tr>
     </tbody>
 </table>
+<ul class="pagination">
+    <li *ngFor="let item of [].constructor(pagesCount); let i = index" class="page-item">
+        <a class="page-link" type="button" (click)="onPageItemClick(i)" href="#">{{i + 1}}</a>
+    </li>
+</ul>
 <a type="button" class="btn btn-dark" routerLink="./create">Создать</a>

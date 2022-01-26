@@ -1,6 +1,7 @@
 ﻿using Invoice.Api.Invoice.Requests;
 using Invoice.UseCases.Invoices;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 using System.Threading.Tasks;
 
 namespace Invoice.Api.Controllers
@@ -26,9 +27,16 @@ namespace Invoice.Api.Controllers
         }
 
         [HttpGet] 
-        public async Task<IActionResult> GetInvoices()
+        public IActionResult GetInvoices(string filters, string sorts, int page, int pageSize)
         {
-            var result = await _getInvoicesUseCase.Execute();
+            var sieveModel = new SieveModel()
+            {
+                Filters = filters,
+                Sorts = sorts,
+                Page = page,
+                PageSize = pageSize
+            };
+            var result = _getInvoicesUseCase.Execute(sieveModel);
             return Ok(result);
         }
 

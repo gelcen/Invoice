@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Sieve.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,8 @@ namespace Invoice.Api
             });
 
             services.Configure<InvoiceCsvOptions>(Configuration.GetSection(InvoiceCsvOptions.CsvDataSource));
+
+            services.AddScoped<SieveProcessor>();
 
             //services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
             services.AddSingleton<IInvoiceRepository, InvoiceCsvRepository>();
