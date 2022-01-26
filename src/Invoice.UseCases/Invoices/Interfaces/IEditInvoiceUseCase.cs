@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Invoice.UseCases.Invoices.InputDtos;
+using System.Threading.Tasks;
 
 namespace Invoice.UseCases.Invoices
 {
     public interface IEditInvoiceUseCase
     {
-        Task Execute(int? invoiceId, float? amount);
+        Task Execute(EditInvoiceDto dto);
     }
 }

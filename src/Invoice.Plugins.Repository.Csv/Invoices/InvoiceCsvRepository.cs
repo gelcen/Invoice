@@ -101,7 +101,9 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             {
                 if (invoiceRecord.Number == invoice.Number)
                 {
+                    invoiceRecord.Number = invoice.Number;
                     invoiceRecord.Amount = invoice.Amount.ToString();
+                    invoiceRecord.PaymentMethod = (int)invoice.PaymentMethod;
                     invoiceRecord.ModifiedAt = invoice.ModifiedAt;
                 }
                 invoiceRecords.Add(invoiceRecord);

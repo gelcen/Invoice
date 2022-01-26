@@ -31,14 +31,16 @@ export class InvoiceService {
   }
 
   addInvoice(invoice: InvoiceEditViewModel): Observable<any> {
-    return this.http.post<InvoiceEditViewModel>(this.apiUrl, 
-      {
-        number: invoice.number, 
-        amount: invoice.amount, 
-        paymentMethod: invoice.paymentMethod 
-      })
+    return this.http.post<InvoiceEditViewModel>(this.apiUrl, invoice)
       .pipe(
         catchError(this.handleError<InvoiceEditViewModel>('addInvoice'))
+      );
+  }
+
+  updateInvoice(invoice: InvoiceEditViewModel): Observable<any> {
+    return this.http.put(this.apiUrl, invoice)
+      .pipe(
+        catchError(this.handleError<any>('updateInvoice'))
       );
   }
 

@@ -72,16 +72,18 @@ export class InvoiceEditComponent implements OnInit {
       } as InvoiceEditViewModel;
 
       if (this.isEditing) {
-        //this.invoiceService.updateGood(invoice);
-        this.isEditing = false;
+        this.invoiceService.updateInvoice(invoice).subscribe(
+          _ => this.location.back()
+        );
       }
       else {
-        this.invoiceService.addInvoice(invoice)
-         .subscribe();
+        this.invoiceService.addInvoice(invoice).subscribe(
+          _ => {
+            this.invoiceFormGroup.reset();
+            this.invoiceFormGroup.controls.paymentMethodForm.setValue(this.paymentMethods[0]);
+          }
+        );
       }
-      
-      this.invoiceFormGroup.reset();
-      this.invoiceFormGroup.controls.paymentMethodForm.setValue(this.paymentMethods[0]);
     }
   }
 

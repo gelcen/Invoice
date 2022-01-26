@@ -1,4 +1,5 @@
-﻿using Invoice.UseCases.Invoices;
+﻿using Invoice.Api.Invoice.Requests;
+using Invoice.UseCases.Invoices;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -52,9 +53,14 @@ namespace Invoice.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditInvoice(int? number, float? amount)
+        public async Task<IActionResult> EditInvoice([FromBody] UpdateInvoiceRequest request)
         {
-            await _editInvoiceUseCase.Execute(number, amount);
+            await _editInvoiceUseCase.Execute(new UseCases.Invoices.InputDtos.EditInvoiceDto()
+            {
+                Number = request.Number,
+                Amount = request.Amount,
+                PaymentMethod = request.PaymentMethod
+            });
             return NoContent();
         }
     }
