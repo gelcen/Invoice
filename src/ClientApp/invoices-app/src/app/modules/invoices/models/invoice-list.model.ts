@@ -1,4 +1,4 @@
-export interface Invoice {
+export interface InvoiceListElementViewModel {
     number: number;
     amount: number;
     createdAt: Date; 

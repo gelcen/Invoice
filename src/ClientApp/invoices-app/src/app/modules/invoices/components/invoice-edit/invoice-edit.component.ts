@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { InvoiceService } from '../../services/invoice.service';
+import { InvoiceEditViewModel } from "src/app/modules/invoices/models/invoice-edit.model";
 
 interface SelectOption {
   number: number;
@@ -15,6 +16,7 @@ interface SelectOption {
   styleUrls: ['./invoice-edit.component.css']
 })
 export class InvoiceEditComponent implements OnInit {
+  private invoice: InvoiceEditViewModel = {} as InvoiceEditViewModel;
   invoiceFormGroup: FormGroup;
   private isEditing: boolean = false;  
   selectedNumber?: number;
@@ -26,7 +28,8 @@ export class InvoiceEditComponent implements OnInit {
   ]
 
   constructor(private location: Location,
-    private route: ActivatedRoute) { 
+    private route: ActivatedRoute,
+    private invoiceService: InvoiceService) { 
     this.invoiceFormGroup = new FormGroup({
       invoiceNumberForm: new FormControl("", [Validators.required, Validators.pattern("^[0-9]*$")]),
       invoiceAmountForm: new FormControl("", [Validators.required, Validators.pattern(/^\-?\d+((\.|\,)\d+)?$/)]),
@@ -35,8 +38,25 @@ export class InvoiceEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedNumber = Number(this.route.snapshot.paramMap.get('number'));
-    console.log(this.selectedNumber);
+    let number = this.route.snapshot.paramMap.get('number');
+    if (number === null) {
+      this.isEditing = false;
+    }
+    else {
+      this.isEditing = true;
+      this.selectedNumber = Number(number);
+      this.invoiceService.getInvoiceByNumber(this.selectedNumber)
+        .subscribe(result => {
+          this.invoice = result;
+          this.invoiceNumberForm.setValue(this.invoice.number);
+          this.invoiceAmountForm.setValue(this.invoice.amount);
+          this.invoiceFormGroup.controls.paymentMethodForm.setValue(
+            this.paymentMethods.find((m) => {
+              return m.number === result.paymentMethod
+            })
+          );
+        });
+    }
   }
 
   onSubmit(): void {
@@ -44,6 +64,24 @@ export class InvoiceEditComponent implements OnInit {
       console.log(this.invoiceFormGroup.controls.invoiceNumberForm.value);
       console.log(this.invoiceFormGroup.controls.invoiceAmountForm.value);
       console.log(this.invoiceFormGroup.controls.paymentMethodForm.value);
+
+      let invoice = {
+        number: this.invoiceFormGroup.controls.invoiceNumberForm.value,
+        amount: this.invoiceFormGroup.controls.invoiceAmountForm.value,
+        paymentMethod: this.invoiceFormGroup.controls.paymentMethodForm.value.number
+      } as InvoiceEditViewModel;
+
+      if (this.isEditing) {
+        //this.invoiceService.updateGood(invoice);
+        this.isEditing = false;
+      }
+      else {
+        this.invoiceService.addInvoice(invoice)
+         .subscribe();
+      }
+      
+      this.invoiceFormGroup.reset();
+      this.invoiceFormGroup.controls.paymentMethodForm.setValue(this.paymentMethods[0]);
     }
   }
 

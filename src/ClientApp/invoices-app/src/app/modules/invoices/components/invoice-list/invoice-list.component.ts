@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Invoice } from '../../models/invoice.model';
+import { InvoiceListElementViewModel } from '../../models/invoice-list.model';
 import { InvoiceService } from '../../services/invoice.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { InvoiceService } from '../../services/invoice.service';
 })
 export class InvoiceListComponent implements OnInit {
 
-  invoices: Invoice[] = [];
+  invoices: InvoiceListElementViewModel[] = [];
 
   constructor(private invoiceService: InvoiceService,
     private router: Router) { }
@@ -20,7 +20,7 @@ export class InvoiceListComponent implements OnInit {
       this.invoices = result);
   }
 
-  onEditClick(invoice: Invoice): void {
+  onEditClick(invoice: InvoiceListElementViewModel): void {
     this.router.navigate(['./edit', invoice.number]);
   }
 }

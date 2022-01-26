@@ -5,6 +5,6 @@ namespace Invoice.UseCases.Invoices
 {
     public interface IGetInvoiceByNumberUseCase
     {
-        Task<GetInvoiceViewModel> Execute(int invoiceId);
+        Task<GetInvoiceByNumberViewModel> Execute(int invoiceId);
     }
 }

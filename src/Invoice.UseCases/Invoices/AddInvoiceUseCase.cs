@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Invoice.CoreBusiness;
+using Invoice.UseCases.Invoices.InputDtos;
+using System.Threading.Tasks;
 
 namespace Invoice.UseCases.Invoices
 {
@@ -11,14 +13,19 @@ namespace Invoice.UseCases.Invoices
             this._repository = repository;
         }
 
-        public async Task<CoreBusiness.Invoice> Execute(int? number, float? amount)
+        public async Task<CoreBusiness.Invoice> Execute(AddInvoiceDto dto)
         {
-            if (number == null || amount == null)
+            if (dto.Number == null || dto.Amount == null || dto.PaymentMethod == null)
             {
-                throw new AddInvoiceException("Number and Amount of invoice should not be null");
+                throw new AddInvoiceException("Number, Amount and PaymentMethod of invoice should not be null");
             }
 
-            var invoiceWithNumber = await _repository.GetByNumber(number.Value);
+            if (dto.PaymentMethod.Value < 1 || dto.PaymentMethod.Value > 3)
+            {
+                throw new AddInvoiceException("Incorrect value for PaymentMethod. Should be in range from 1 to 3");
+            }
+
+            var invoiceWithNumber = await _repository.GetByNumber(dto.Number.Value);
 
             if (invoiceWithNumber != null)
             {
@@ -27,8 +34,9 @@ namespace Invoice.UseCases.Invoices
 
             var invoice = new CoreBusiness.Invoice()
             {
-                Number = number.Value,
-                Amount = amount.Value
+                Number = dto.Number.Value,
+                Amount = dto.Amount.Value,
+                PaymentMethod = (PaymentMethod)dto.PaymentMethod.Value
             };
 
             await _repository.AddInvoice(invoice);

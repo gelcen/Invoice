@@ -39,10 +39,16 @@ namespace Invoice.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddInvoice(int? number, float? amount)
+        public async Task<IActionResult> AddInvoice([FromBody] AddInvoiceRequest request)
         {
-            var createdInvoice = await _addInvoiceUseCase.Execute(number, amount);
-            return CreatedAtAction(nameof(GetInvoiceByNumber), new { id = createdInvoice.Number }, createdInvoice);
+            var createdInvoice = await _addInvoiceUseCase.Execute(
+                new UseCases.Invoices.InputDtos.AddInvoiceDto()
+                {
+                    Number = request.Number,
+                    Amount = request.Amount,
+                    PaymentMethod = request.PaymentMethod
+                });
+            return CreatedAtAction(nameof(AddInvoice), new { id = createdInvoice.Number }, createdInvoice);
         }
 
         [HttpPut]

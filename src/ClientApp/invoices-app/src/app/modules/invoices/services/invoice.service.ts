@@ -4,7 +4,8 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
-import { Invoice } from '../models/invoice.model';
+import { InvoiceEditViewModel } from '../models/invoice-edit.model';
+import { InvoiceListElementViewModel } from '../models/invoice-list.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,29 @@ export class InvoiceService {
 
   constructor(private http: HttpClient) { }
 
-  getInvoices(): Observable<Invoice[]> {
-    return this.http.get<Invoice[]>(this.apiUrl)
+  getInvoices(): Observable<InvoiceListElementViewModel[]> {
+    return this.http.get<InvoiceListElementViewModel[]>(this.apiUrl)
       .pipe(
-        catchError(this.handleError<Invoice[]>("getInvoices"))
+        catchError(this.handleError<InvoiceListElementViewModel[]>("getInvoices"))
+      );
+  }
+
+  getInvoiceByNumber(number: number): Observable<InvoiceEditViewModel> {
+    return this.http.get<InvoiceEditViewModel>(this.apiUrl + "/" + number)
+      .pipe(
+        catchError(this.handleError<InvoiceEditViewModel>("getInvoiceByNumber"))
+      );
+  }
+
+  addInvoice(invoice: InvoiceEditViewModel): Observable<any> {
+    return this.http.post<InvoiceEditViewModel>(this.apiUrl, 
+      {
+        number: invoice.number, 
+        amount: invoice.amount, 
+        paymentMethod: invoice.paymentMethod 
+      })
+      .pipe(
+        catchError(this.handleError<InvoiceEditViewModel>('addInvoice'))
       );
   }
 

@@ -13,7 +13,7 @@ namespace Invoice.UseCases.Invoices
             this._repository = repository;
         }
 
-        public async Task<GetInvoiceViewModel> Execute(int number)
+        public async Task<GetInvoiceByNumberViewModel> Execute(int number)
         {
             var invoice = await _repository.GetByNumber(number);
 
@@ -22,12 +22,10 @@ namespace Invoice.UseCases.Invoices
                 throw new InvoiceNotFoundException($"Invoice with number {number} not found");
             }
 
-            return new GetInvoiceViewModel()
+            return new GetInvoiceByNumberViewModel()
             {
                 Number = invoice.Number,
-                CreatedAt = invoice.CreatedAt,
-                PaymentMethod = invoice.PaymentMethod.ToViewModelString(),
-                ProcessingStatus = invoice.PaymentMethod.ToViewModelString(),
+                PaymentMethod = (int)invoice.PaymentMethod,
                 Amount = invoice.Amount
             };
         }

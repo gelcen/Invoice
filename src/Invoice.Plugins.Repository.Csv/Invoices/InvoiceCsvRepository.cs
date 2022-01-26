@@ -11,10 +11,11 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 {
     public class InvoiceCsvRepository : IInvoiceRepository
     {
+        private readonly object _lock = new object();
         private readonly InvoiceCsvOptions _options;
         private readonly CsvConfiguration _csvConfig = new(CultureInfo.CurrentCulture)
         {
-            HasHeaderRecord = false
+            HasHeaderRecord = false,
         };
         private readonly CultureInfo _provider = new("en-US");
 
@@ -23,13 +24,33 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             this._options = options.Value;
         }
 
-        public Task AddInvoice(CoreBusiness.Invoice invoice)
+        public async Task AddInvoice(CoreBusiness.Invoice invoice)
         {
-            using var stream = File.Open(_options.PathToCsvFile, FileMode.Append);
+            //using var stream = File.Open(_options.PathToCsvFile, FileMode.Append);
+            //using var streamWriter = new StreamWriter(stream);
+            //using var csvWriter = new CsvWriter(streamWriter, _csvConfig);
+            //csvWriter.WriteRecord(CreateRecordFromInvoice(invoice));
+            //return Task.CompletedTask;
+            using var streamReader = File.OpenText(_options.PathToCsvFile);
+            using var csvReader = new CsvReader(streamReader, _csvConfig);
+
+            List<InvoiceRecord> invoiceRecords = new();
+
+            await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
+            {
+                invoiceRecords.Add(invoiceRecord);
+            }
+            streamReader.Close();
+
+            using var stream = File.Open(_options.PathToCsvFile, FileMode.Open);
             using var streamWriter = new StreamWriter(stream);
             using var csvWriter = new CsvWriter(streamWriter, _csvConfig);
-            csvWriter.WriteRecord(CreateRecordFromInvoice(invoice));
-            return Task.CompletedTask;
+
+            invoiceRecords.Add(CreateRecordFromInvoice(invoice));
+
+            await csvWriter.WriteRecordsAsync<InvoiceRecord>(invoiceRecords);
+
+            csvWriter.Flush();
         }
 
         public async Task<List<CoreBusiness.Invoice>> GetAll()
@@ -98,6 +119,9 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
         private CoreBusiness.Invoice CreateInvoiceFromRecord(InvoiceRecord record)
         {
+            if (record.Amount.Contains(',')) 
+                record.Amount = record.Amount.Replace(',', '.');
+
             return new CoreBusiness.Invoice()
             {
                 Number = record.Number,
