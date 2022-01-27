@@ -1,0 +1,7 @@
+.bottom-panel {
+    display: flex;
+}
+
+.bottom-panel > * {
+    margin-left: 10px;
+}
