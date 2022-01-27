@@ -1,3 +1,4 @@
+using Invoice.Api.Middleware;
 using Invoice.Plugins.QueryProcessor.Sieve;
 using Invoice.Plugins.Repository.Csv.Invoices;
 using Invoice.Plugins.Repository.InMemory.Invoices;
@@ -53,6 +54,8 @@ namespace Invoice.Api
             services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
             services.AddTransient<IEditInvoiceUseCase, EditInvoiceUseCase>();
 
+            services.AddTransient<ExceptionHandlingMiddleware>();
+
             services.AddCors();
         }
 
@@ -71,6 +74,8 @@ namespace Invoice.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice.Api v1"));
             }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

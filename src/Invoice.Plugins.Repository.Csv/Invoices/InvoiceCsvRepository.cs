@@ -5,14 +5,12 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Invoice.Plugins.Repository.Csv.Invoices
 {
     public class InvoiceCsvRepository : IInvoiceRepository
     {
-        private readonly object _lock = new object();
         private readonly InvoiceCsvOptions _options;
         private readonly CsvConfiguration _csvConfig = new(CultureInfo.CurrentCulture)
         {
@@ -27,11 +25,6 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
         public async Task AddInvoice(CoreBusiness.Invoice invoice)
         {
-            //using var stream = File.Open(_options.PathToCsvFile, FileMode.Append);
-            //using var streamWriter = new StreamWriter(stream);
-            //using var csvWriter = new CsvWriter(streamWriter, _csvConfig);
-            //csvWriter.WriteRecord(CreateRecordFromInvoice(invoice));
-            //return Task.CompletedTask;
             using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
 
@@ -66,11 +59,8 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
             foreach (var invoiceRecord in invoices)
             {
-                //invoiceList.Add(CreateInvoiceFromRecord(invoiceRecord));
                 yield return CreateInvoiceFromRecord(invoiceRecord);
             }
-
-            //return invoiceList;
         }
 
         public async Task<CoreBusiness.Invoice> GetByNumber(int number)
