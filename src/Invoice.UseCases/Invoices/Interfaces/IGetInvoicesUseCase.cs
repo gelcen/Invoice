@@ -1,11 +1,10 @@
 ﻿using Invoice.UseCases.Invoices.ViewModels;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Invoice.UseCases.Shared.QueryProcessor;
 
 namespace Invoice.UseCases.Invoices
 {
     public interface IGetInvoicesUseCase
     {
-        Task<List<GetInvoiceViewModel>> Execute();
+        InvoiceTableViewModel Execute(QueryModel model);
     }
 }

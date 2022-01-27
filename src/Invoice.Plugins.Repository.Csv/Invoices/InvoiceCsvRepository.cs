@@ -11,7 +11,6 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 {
     public class InvoiceCsvRepository : IInvoiceRepository
     {
-        private readonly object _lock = new object();
         private readonly InvoiceCsvOptions _options;
         private readonly CsvConfiguration _csvConfig = new(CultureInfo.CurrentCulture)
         {
@@ -26,11 +25,6 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
 
         public async Task AddInvoice(CoreBusiness.Invoice invoice)
         {
-            //using var stream = File.Open(_options.PathToCsvFile, FileMode.Append);
-            //using var streamWriter = new StreamWriter(stream);
-            //using var csvWriter = new CsvWriter(streamWriter, _csvConfig);
-            //csvWriter.WriteRecord(CreateRecordFromInvoice(invoice));
-            //return Task.CompletedTask;
             using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
 
@@ -53,22 +47,20 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             csvWriter.Flush();
         }
 
-        public async Task<List<CoreBusiness.Invoice>> GetAll()
+        public IEnumerable<CoreBusiness.Invoice> GetAll()
         {
             using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
 
-            var invoices = csvReader.GetRecordsAsync<InvoiceRecord>();
+            var invoices = csvReader.GetRecords<InvoiceRecord>();
 
             var invoiceList = new List<CoreBusiness.Invoice>();
 
 
-            await foreach (var invoiceRecord in invoices)
+            foreach (var invoiceRecord in invoices)
             {
-                invoiceList.Add(CreateInvoiceFromRecord(invoiceRecord));
+                yield return CreateInvoiceFromRecord(invoiceRecord);
             }
-
-            return invoiceList;
         }
 
         public async Task<CoreBusiness.Invoice> GetByNumber(int number)
@@ -90,7 +82,7 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             return invoice;
         }
 
-        public async Task UpdateInvoice(CoreBusiness.Invoice invoice)
+        public async Task UpdateInvoice(CoreBusiness.Invoice invoice, int? previousNumber)
         {
             using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
@@ -100,6 +92,13 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
             {
                 if (invoiceRecord.Number == invoice.Number)
+                {
+                    invoiceRecord.Number = invoice.Number;
+                    invoiceRecord.Amount = invoice.Amount.ToString();
+                    invoiceRecord.PaymentMethod = (int)invoice.PaymentMethod;
+                    invoiceRecord.ModifiedAt = invoice.ModifiedAt;
+                }
+                else if (previousNumber.HasValue && invoiceRecord.Number == previousNumber)
                 {
                     invoiceRecord.Number = invoice.Number;
                     invoiceRecord.Amount = invoice.Amount.ToString();

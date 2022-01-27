@@ -1,6 +1,10 @@
+using Invoice.Api.Middleware;
+using Invoice.Plugins.QueryProcessor.Sieve;
 using Invoice.Plugins.Repository.Csv.Invoices;
 using Invoice.Plugins.Repository.InMemory.Invoices;
 using Invoice.UseCases.Invoices;
+using Invoice.UseCases.Invoices.ViewModels;
+using Invoice.UseCases.Shared.QueryProcessor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Sieve.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +42,10 @@ namespace Invoice.Api
 
             services.Configure<InvoiceCsvOptions>(Configuration.GetSection(InvoiceCsvOptions.CsvDataSource));
 
+            services.AddScoped<ISieveProcessor, InvoiceSieveProcessor>();
+
+            services.AddTransient<IQueryProcessor<GetInvoiceViewModel>, QueryProcessor>();
+
             //services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
             services.AddSingleton<IInvoiceRepository, InvoiceCsvRepository>();
 
@@ -44,6 +53,8 @@ namespace Invoice.Api
             services.AddTransient<IGetInvoiceByNumberUseCase, GetInvoiceByNumberUseCase>();
             services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
             services.AddTransient<IEditInvoiceUseCase, EditInvoiceUseCase>();
+
+            services.AddTransient<ExceptionHandlingMiddleware>();
 
             services.AddCors();
         }
@@ -63,6 +74,8 @@ namespace Invoice.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice.Api v1"));
             }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

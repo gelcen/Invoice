@@ -1,7 +1,7 @@
 export interface InvoiceListElementViewModel {
     number: number;
     amount: number;
-    createdAt: Date; 
+    createdAt: Date;
     modifiedAt: Date;
     processingStatus: number;
     paymentMethod: number;

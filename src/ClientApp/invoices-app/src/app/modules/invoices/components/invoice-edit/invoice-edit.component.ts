@@ -20,6 +20,7 @@ export class InvoiceEditComponent implements OnInit {
   invoiceFormGroup: FormGroup;
   private isEditing: boolean = false;  
   selectedNumber?: number;
+  previousNumber: any = null;
 
   paymentMethods: SelectOption[] = [
     { number: 1, name: "Кредитная карта" },
@@ -48,6 +49,7 @@ export class InvoiceEditComponent implements OnInit {
       this.invoiceService.getInvoiceByNumber(this.selectedNumber)
         .subscribe(result => {
           this.invoice = result;
+          this.previousNumber = result.number;
           this.invoiceNumberForm.setValue(this.invoice.number);
           this.invoiceAmountForm.setValue(this.invoice.amount);
           this.invoiceFormGroup.controls.paymentMethodForm.setValue(
@@ -61,22 +63,21 @@ export class InvoiceEditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.invoiceFormGroup.valid) {
-      console.log(this.invoiceFormGroup.controls.invoiceNumberForm.value);
-      console.log(this.invoiceFormGroup.controls.invoiceAmountForm.value);
-      console.log(this.invoiceFormGroup.controls.paymentMethodForm.value);
 
       let invoice = {
         number: this.invoiceFormGroup.controls.invoiceNumberForm.value,
         amount: this.invoiceFormGroup.controls.invoiceAmountForm.value,
-        paymentMethod: this.invoiceFormGroup.controls.paymentMethodForm.value.number
+        paymentMethod: this.invoiceFormGroup.controls.paymentMethodForm.value.number,
       } as InvoiceEditViewModel;
 
       if (this.isEditing) {
+        invoice.previousNumber = this.previousNumber;
         this.invoiceService.updateInvoice(invoice).subscribe(
           _ => this.location.back()
         );
       }
       else {
+        invoice.previousNumber = null;
         this.invoiceService.addInvoice(invoice).subscribe(
           _ => {
             this.invoiceFormGroup.reset();

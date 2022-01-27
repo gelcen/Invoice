@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Invoice.UseCases.Invoices.Exceptions;
 
 namespace Invoice.UseCases.Invoices
 {
-    public class EditInvoiceException : Exception
+    public class EditInvoiceException : BadRequestException
     {
         public EditInvoiceException(string message) : base(message)
         {

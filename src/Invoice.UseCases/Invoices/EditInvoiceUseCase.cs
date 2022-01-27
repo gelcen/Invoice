@@ -21,14 +21,23 @@ namespace Invoice.UseCases.Invoices
                 throw new EditInvoiceException("Number, Amount and PaymentMethod of invoice should not be null");
             }
 
-            var invoice = await _repository.GetByNumber(dto.Number.Value);
+            CoreBusiness.Invoice invoice = null;
+
+            if (dto.PreviousNumber.HasValue)
+            {
+                invoice = await _repository.GetByNumber(dto.PreviousNumber.Value);
+            }
+            else
+            {
+                invoice = await _repository.GetByNumber(dto.Number.Value);
+            }
 
             invoice.Number = dto.Number.Value;
             invoice.Amount = dto.Amount.Value;
             invoice.PaymentMethod = (PaymentMethod)dto.PaymentMethod;
             invoice.ModifiedAt = DateTime.Now;
 
-            await _repository.UpdateInvoice(invoice);
+            await _repository.UpdateInvoice(invoice, dto.PreviousNumber);
         }
     }
 }

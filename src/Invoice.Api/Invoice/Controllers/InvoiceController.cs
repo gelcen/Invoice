@@ -1,6 +1,8 @@
 ﻿using Invoice.Api.Invoice.Requests;
 using Invoice.UseCases.Invoices;
+using Invoice.UseCases.Shared.QueryProcessor;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 using System.Threading.Tasks;
 
 namespace Invoice.Api.Controllers
@@ -26,9 +28,16 @@ namespace Invoice.Api.Controllers
         }
 
         [HttpGet] 
-        public async Task<IActionResult> GetInvoices()
+        public IActionResult GetInvoices(string filters, string sorts, int page, int pageSize)
         {
-            var result = await _getInvoicesUseCase.Execute();
+            var queryModel = new QueryModel()
+            {
+                Filters = filters,
+                Sorts = sorts,
+                Page = page,
+                PageSize = pageSize
+            };
+            var result = _getInvoicesUseCase.Execute(queryModel);
             return Ok(result);
         }
 
@@ -59,7 +68,8 @@ namespace Invoice.Api.Controllers
             {
                 Number = request.Number,
                 Amount = request.Amount,
-                PaymentMethod = request.PaymentMethod
+                PaymentMethod = request.PaymentMethod,
+                PreviousNumber = request.PreviousNumber
             });
             return NoContent();
         }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Invoice.Plugins.Repository.InMemory.Invoices
 {
-    public class InvoiceInMemoryRepository : IInvoiceRepository
+    public class InvoiceInMemoryRepository //: IInvoiceRepository
     {
         private static List<CoreBusiness.Invoice> _invoices;
 
