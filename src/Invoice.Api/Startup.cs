@@ -1,3 +1,4 @@
+using Invoice.Api.Invoice.Controllers;
 using Invoice.Plugins.Repository.Csv.Invoices;
 using Invoice.Plugins.Repository.InMemory.Invoices;
 using Invoice.UseCases.Invoices;
@@ -38,6 +39,7 @@ namespace Invoice.Api
 
             services.Configure<InvoiceCsvOptions>(Configuration.GetSection(InvoiceCsvOptions.CsvDataSource));
 
+            services.AddScoped<ISieveCustomFilterMethods, MyCustomFilterMethods>();
             services.AddScoped<SieveProcessor>();
 
             //services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();

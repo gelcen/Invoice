@@ -58,7 +58,7 @@ export class InvoiceListComponent implements OnInit {
   tableRequest: InvoiceTableRequest = {
     filters: "",
     sorts: "",
-    page: 0,
+    page: 1,
     pageSize: 5
   } as InvoiceTableRequest;
 
