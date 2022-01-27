@@ -68,7 +68,8 @@ namespace Invoice.Api.Controllers
             {
                 Number = request.Number,
                 Amount = request.Amount,
-                PaymentMethod = request.PaymentMethod
+                PaymentMethod = request.PaymentMethod,
+                PreviousNumber = request.PreviousNumber
             });
             return NoContent();
         }

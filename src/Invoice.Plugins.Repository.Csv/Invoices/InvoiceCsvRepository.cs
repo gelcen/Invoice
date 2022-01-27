@@ -92,7 +92,7 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             return invoice;
         }
 
-        public async Task UpdateInvoice(CoreBusiness.Invoice invoice)
+        public async Task UpdateInvoice(CoreBusiness.Invoice invoice, int? previousNumber)
         {
             using var streamReader = File.OpenText(_options.PathToCsvFile);
             using var csvReader = new CsvReader(streamReader, _csvConfig);
@@ -102,6 +102,13 @@ namespace Invoice.Plugins.Repository.Csv.Invoices
             await foreach (var invoiceRecord in csvReader.GetRecordsAsync<InvoiceRecord>())
             {
                 if (invoiceRecord.Number == invoice.Number)
+                {
+                    invoiceRecord.Number = invoice.Number;
+                    invoiceRecord.Amount = invoice.Amount.ToString();
+                    invoiceRecord.PaymentMethod = (int)invoice.PaymentMethod;
+                    invoiceRecord.ModifiedAt = invoice.ModifiedAt;
+                }
+                else if (previousNumber.HasValue && invoiceRecord.Number == previousNumber)
                 {
                     invoiceRecord.Number = invoice.Number;
                     invoiceRecord.Amount = invoice.Amount.ToString();
