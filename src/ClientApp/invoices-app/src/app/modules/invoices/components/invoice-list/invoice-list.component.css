@@ -1,0 +1,19 @@
+.bottom-panel {
+    display: flex;
+}
+
+.bottom-panel > * {
+    margin-left: 10px;
+}
+
+.search-panel {
+    display: flex;
+}
+
+.search-panel > * {
+    margin-left: 10px;
+}
+
+.search-button {
+    width: 150px;
+}

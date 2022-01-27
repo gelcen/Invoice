@@ -1,0 +1,11 @@
+.edit-form > * {
+    margin-top: 15px;
+}
+
+.save {
+    margin-left: 10px;
+}
+
+.error-block {
+    color: red;
+}

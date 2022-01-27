@@ -1,3 +1,10 @@
+using Invoice.Api.Middleware;
+using Invoice.Plugins.QueryProcessor.Sieve;
+using Invoice.Plugins.Repository.Csv.Invoices;
+using Invoice.Plugins.Repository.InMemory.Invoices;
+using Invoice.UseCases.Invoices;
+using Invoice.UseCases.Invoices.ViewModels;
+using Invoice.UseCases.Shared.QueryProcessor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Sieve.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +31,6 @@ namespace Invoice.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -32,17 +39,43 @@ namespace Invoice.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Invoice.Api", Version = "v1" });
             });
+
+            services.Configure<InvoiceCsvOptions>(Configuration.GetSection(InvoiceCsvOptions.CsvDataSource));
+
+            services.AddScoped<ISieveProcessor, InvoiceSieveProcessor>();
+
+            services.AddTransient<IQueryProcessor<GetInvoiceViewModel>, QueryProcessor>();
+
+            //services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
+            services.AddSingleton<IInvoiceRepository, InvoiceCsvRepository>();
+
+            services.AddTransient<IGetInvoicesUseCase, GetInvoicesUseCase>();
+            services.AddTransient<IGetInvoiceByNumberUseCase, GetInvoiceByNumberUseCase>();
+            services.AddTransient<IAddInvoiceUseCase, AddInvoiceUseCase>();
+            services.AddTransient<IEditInvoiceUseCase, EditInvoiceUseCase>();
+
+            services.AddTransient<ExceptionHandlingMiddleware>();
+
+            services.AddCors();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options =>
+                options
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                );
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice.Api v1"));
             }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

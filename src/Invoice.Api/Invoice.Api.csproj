@@ -5,7 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Sieve" Version="2.5.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Invoice.Plugins.QueryProcessor.Sieve\Invoice.Plugins.QueryProcessor.Sieve.csproj" />
+    <ProjectReference Include="..\Invoice.Plugins.Repository.Csv\Invoice.Plugins.Repository.Csv.csproj" />
+    <ProjectReference Include="..\Invoice.Plugins.Repository.InMemory\Invoice.Plugins.Repository.InMemory.csproj" />
+    <ProjectReference Include="..\Invoice.UseCases\Invoice.UseCases.csproj" />
   </ItemGroup>
 
 </Project>
