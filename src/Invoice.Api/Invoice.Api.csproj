@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Invoice.Plugins.QueryProcessor.Sieve\Invoice.Plugins.QueryProcessor.Sieve.csproj" />
     <ProjectReference Include="..\Invoice.Plugins.Repository.Csv\Invoice.Plugins.Repository.Csv.csproj" />
     <ProjectReference Include="..\Invoice.Plugins.Repository.InMemory\Invoice.Plugins.Repository.InMemory.csproj" />
     <ProjectReference Include="..\Invoice.UseCases\Invoice.UseCases.csproj" />

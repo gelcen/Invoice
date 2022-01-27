@@ -5,7 +5,6 @@ import { catchError } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { InvoiceEditViewModel } from '../models/invoice-edit.model';
-import { InvoiceListElementViewModel } from '../models/invoice-list.model';
 import { InvoiceTableViewModel } from '../models/invoice-table.model';
 import { InvoiceTableRequest } from '../requests/invoice-table.request';
 

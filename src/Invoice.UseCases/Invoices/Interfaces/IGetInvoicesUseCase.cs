@@ -1,10 +1,10 @@
 ﻿using Invoice.UseCases.Invoices.ViewModels;
-using Sieve.Models;
+using Invoice.UseCases.Shared.QueryProcessor;
 
 namespace Invoice.UseCases.Invoices
 {
     public interface IGetInvoicesUseCase
     {
-        InvoiceTableViewModel Execute(SieveModel sieveModel);
+        InvoiceTableViewModel Execute(QueryModel model);
     }
 }

@@ -125,9 +125,7 @@ export class InvoiceListComponent implements OnInit {
   }
 
   onSearchClick(): void {
-    console.log(this.tableRequest);
     this.tableRequest.filters = this.searchFilter;
-    console.log(this.tableRequest);
     this.fetchTable();
   }
 

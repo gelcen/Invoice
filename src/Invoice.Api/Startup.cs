@@ -1,7 +1,9 @@
-using Invoice.Api.Invoice.Controllers;
+using Invoice.Plugins.QueryProcessor.Sieve;
 using Invoice.Plugins.Repository.Csv.Invoices;
 using Invoice.Plugins.Repository.InMemory.Invoices;
 using Invoice.UseCases.Invoices;
+using Invoice.UseCases.Invoices.ViewModels;
+using Invoice.UseCases.Shared.QueryProcessor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,8 +41,9 @@ namespace Invoice.Api
 
             services.Configure<InvoiceCsvOptions>(Configuration.GetSection(InvoiceCsvOptions.CsvDataSource));
 
-            services.AddScoped<ISieveCustomFilterMethods, MyCustomFilterMethods>();
-            services.AddScoped<SieveProcessor>();
+            services.AddScoped<ISieveProcessor, InvoiceSieveProcessor>();
+
+            services.AddTransient<IQueryProcessor<GetInvoiceViewModel>, QueryProcessor>();
 
             //services.AddSingleton<IInvoiceRepository, InvoiceInMemoryRepository>();
             services.AddSingleton<IInvoiceRepository, InvoiceCsvRepository>();
