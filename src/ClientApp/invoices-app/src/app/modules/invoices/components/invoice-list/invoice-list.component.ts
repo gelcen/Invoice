@@ -64,6 +64,7 @@ export class InvoiceListComponent implements OnInit {
 
   invoices?: InvoiceListElementViewModel[];
   pagesCount?: number;
+  searchFilter: string = "";
 
   constructor(private invoiceService: InvoiceService,
     private router: Router) { }
@@ -120,7 +121,12 @@ export class InvoiceListComponent implements OnInit {
 
     this.tableRequest.sorts = sorts.join(',');
     
-    console.log(this.sortsList);
+    this.fetchTable();
+  }
+
+  onSearchClick(): void {
+    console.log(this.tableRequest);
+    this.tableRequest.filters = this.searchFilter;
     console.log(this.tableRequest);
     this.fetchTable();
   }
@@ -128,6 +134,7 @@ export class InvoiceListComponent implements OnInit {
   private fetchTable(): void {
     this.invoiceService.getInvoices(this.tableRequest)
       .subscribe(result => {
+        this.invoices = [];
         this.invoices = result.data;
         this.pagesCount = result.pagesCount;
       });

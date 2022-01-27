@@ -37,8 +37,20 @@ namespace Invoice.UseCases.Invoices
                 Amount = x.Amount,
                 PaymentMethod = x.PaymentMethod.ToViewModelString()
             }).AsQueryable();
-            var result = _sieveProcessor.Apply(sieveModel, viewModels).ToList();
-            int count = invoices.Count();
+            var modelWithoutSize = new SieveModel()
+            {
+                Filters = sieveModel.Filters,
+                Sorts = sieveModel.Sorts,
+                Page = sieveModel.Page,
+                PageSize = null
+            };
+            var result = _sieveProcessor.Apply(modelWithoutSize, viewModels).ToList();
+            int count;
+            if (string.IsNullOrEmpty(sieveModel.Filters) || string.IsNullOrWhiteSpace(sieveModel.Filters))
+                count = invoices.Count();
+            else
+                count = result.Count();
+            result = _sieveProcessor.Apply(sieveModel, result.AsQueryable()).ToList();
             int pagesCount = count / sieveModel.PageSize.Value;
             if (count % sieveModel.PageSize.Value != 0)
             {
